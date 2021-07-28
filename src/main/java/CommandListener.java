@@ -7,8 +7,6 @@ public class CommandListener extends ListenerAdapter {
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
 
-        System.out.println(event.getName() + event.getSubcommandName());
-
         switch (event.getName() + event.getSubcommandName()) {
 
             case "getmessages":
