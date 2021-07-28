@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+}
+
+group 'me.maarten'
+version '0.1'
+
+repositories {
+    mavenCentral()
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
+    jcenter()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation("net.dv8tion:JDA:4.3.0_293")
+    compile 'com.jagrosh:jda-utilities:3.0.2'
+    compile 'net.dv8tion:JDA:4.3.0_293'
+    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.1'
+    compile 'org.yaml:snakeyaml:1.29'
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task fatJar(type: Jar) {
+    baseName = project.name + '-all'
+    from { (configurations.compile.findAll { !it.path.endsWith(".pom") }).collect {
+        it.isDirectory() ? it : zipTree(it)
+    } }
+    with jar
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
+}
