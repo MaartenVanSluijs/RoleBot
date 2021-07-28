@@ -7,7 +7,9 @@ public class CommandListener extends ListenerAdapter {
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
 
-        switch (event.getName()) {
+        System.out.println(event.getName() + event.getSubcommandName());
+
+        switch (event.getName() + event.getSubcommandName()) {
 
             case "getmessages":
                 new GetMessages().run(event);
@@ -15,22 +17,22 @@ public class CommandListener extends ListenerAdapter {
             case "getroles":
                 new GetRoles().run(event);
                 break;
-            case "createrole":
+            case "rolecreate":
                 new CreateRole().run(event);
                 break;
-            case "sendmessage":
+            case "messagesend":
                 new SendMessage().run(event);
                 break;
-            case "createmessage":
+            case "messagecreate":
                 new CreateMessage().run(event);
                 break;
-            case "deletemessage":
+            case "messagedelete":
                 new DeleteMessage().run(event);
                 break;
-            case "editmessage":
+            case "messageedit":
                 new EditMessage().run(event);
                 break;
-            case "editrole":
+            case "roleedit":
                 new EditRole().run(event);
                 break;
         }
