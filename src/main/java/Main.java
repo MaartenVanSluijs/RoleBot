@@ -19,28 +19,6 @@ public class Main implements EventListener {
 
     public static void main(String[] args) throws LoginException, InterruptedException {
 
-        CommandClientBuilder commandBuilder = new CommandClientBuilder();
-
-        commandBuilder.setOwnerId("153171032465866753");
-        commandBuilder.setEmojis("U+2714", "U+26A0", "U+274C");
-        commandBuilder.setPrefix("!");
-        commandBuilder.useHelpBuilder(true);
-        commandBuilder.addCommands(
-            new GetRoles(),
-            new CreateMessage(),
-            new DeleteMessage(),
-            new GetMessages(),
-            new CreateRole(),
-            new DeleteRole(),
-            new AddRole(),
-            new GetContent(),
-            new SendMessage(),
-            new EditRole(),
-            new EditMessage(),
-            new RemoveRole()
-        );
-
-        CommandClient commandClient = commandBuilder.build();
         ConfigLoader cl = new ConfigLoader();
         Config conf = cl.loadConfig();
 
@@ -48,8 +26,7 @@ public class Main implements EventListener {
                 .addEventListeners(new ButtonListener())
                 .addEventListeners(new SelectMenuListener())
                 .addEventListeners(new CommandListener())
-                .addEventListeners(new Main())
-                .addEventListeners(commandClient).build().awaitReady();
+                .addEventListeners(new Main()).build().awaitReady();
 
         jda.getGuildById(conf.getGuildId()).updateCommands().addCommands(
                 new CommandData("getmessages", "Get all the role messages")

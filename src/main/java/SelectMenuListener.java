@@ -4,6 +4,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.entities.Role;
+import slashCommands.Config;
+import slashCommands.ConfigLoader;
 
 import java.sql.*;
 import java.util.*;
@@ -15,8 +17,11 @@ public class SelectMenuListener extends ListenerAdapter{
 
     public SelectMenuListener() {
 
+        ConfigLoader cl = new ConfigLoader();
+        Config conf = cl.loadConfig();
+
         //Sets up connection to database
-        String url = "jdbc:sqlite:C:/Users/20182667/Documents/Programming/Discord Bots/TestBot/DummyBase.db";
+        String url = "jdbc:sqlite:" + conf.getSqliteDatabase();
         try {
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {

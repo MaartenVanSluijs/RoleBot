@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
+import slashCommands.Config;
+import slashCommands.ConfigLoader;
 
 import java.sql.*;
 import java.util.*;
@@ -20,8 +22,11 @@ public class ButtonListener extends ListenerAdapter{
 
     public ButtonListener() {
 
+        ConfigLoader cl = new ConfigLoader();
+        Config conf = cl.loadConfig();
+
         //Sets up connection with database
-        String url = "jdbc:sqlite:C:/Users/20182667/Documents/Programming/Discord Bots/TestBot/DummyBase.db";
+        String url = "jdbc:sqlite:" + conf.getSqliteDatabase();
         try {
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
