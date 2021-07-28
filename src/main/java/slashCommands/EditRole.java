@@ -26,6 +26,7 @@ public class EditRole extends BaseCommand{
         Boolean messageRemoved = false;
 
 
+        //Load in data
         for (OptionMapping option : event.getOptions()) {
 
             if (option.getName().equals("role")) {
@@ -45,6 +46,7 @@ public class EditRole extends BaseCommand{
             }
         }
 
+        //Check if role exists
         String roleQuery = "SELECT * FROM roles WHERE name = ?";
         int size = 0;
 
@@ -58,6 +60,7 @@ public class EditRole extends BaseCommand{
                 size++;
                 boundMessage = roleRs.getString("messageName");
 
+                //Set data to current data if none is given
                 if (description == null) {
                     description = roleRs.getString("description");
                 }
@@ -82,8 +85,10 @@ public class EditRole extends BaseCommand{
             return;
         }
 
+        //Handles updating when role is not getting deleted
         if (!delete) {
 
+            //Removes data if null is given
             if (description != null && description.equals("null")) {
                 description = null;
             }
@@ -98,6 +103,7 @@ public class EditRole extends BaseCommand{
                 messageRemoved = true;
             }
 
+            //Update database with new role data
             String updateQuery = "UPDATE roles SET description = ?, emoji = ?, gated = ?, messageName = ? WHERE name = ?";
 
             try {
@@ -116,7 +122,7 @@ public class EditRole extends BaseCommand{
 
             event.reply(String.format("Successfully edited role *%s*", roleName)).setEphemeral(ephemeral).queue();
 
-            System.out.println(boundMessage);
+            //Update messages when role has just been removed from message, or moved from one message to another
             if (boundMessage != null) {
                 this.updateMessage(event, boundMessage);
                 if (!messageRemoved) {
@@ -124,8 +130,10 @@ public class EditRole extends BaseCommand{
                 }
             }
 
+        //Role is to be deleted
         } else {
 
+            //Deletes role from database
             String deleteQuery = "DELETE FROM roles WHERE name = ?";
 
             try {
@@ -140,6 +148,7 @@ public class EditRole extends BaseCommand{
 
             event.reply(String.format("Successfully deleted role: *%s*", roleName)).setEphemeral(true).queue();
 
+            //Updates message if role was bound to one
             if (boundMessage != null) {
 
                 this.updateMessage(event, boundMessage);
@@ -148,6 +157,7 @@ public class EditRole extends BaseCommand{
         }
     }
 
+    //Updates message, also content and button if sent
     void updateMessage(SlashCommandEvent event, String messageName) {
 
         String messageQuery = "SELECT roles.emoji, roles.description, messages.id, channels.channelId, messages.content FROM roles, messages, channels WHERE roles.messageName = ? AND roles.messageName = messages.name AND messages.name = channels.message";
@@ -159,6 +169,7 @@ public class EditRole extends BaseCommand{
         Boolean sent = false;
         int amount = 0;
 
+        //Gets information used to update message
         try {
 
             PreparedStatement messagePstmt = conn.prepareStatement(messageQuery);
@@ -180,6 +191,7 @@ public class EditRole extends BaseCommand{
             e.printStackTrace();
         }
 
+        //Updates database to set the type accordingly
         String updateQuery = "UPDATE messages SET type = ? WHERE name = ?";
 
         try {
@@ -193,6 +205,7 @@ public class EditRole extends BaseCommand{
             e.printStackTrace();
         }
 
+        //Updates button and content if message had already been sent
         if (sent) {
 
             Emoji roleEmoji = emoji != null && emoji.charAt(0) == '<' ? Emoji.fromMarkdown(emoji) : emoji != null ? Emoji.fromUnicode(emoji) : null;

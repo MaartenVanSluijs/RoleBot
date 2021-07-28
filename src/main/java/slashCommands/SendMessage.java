@@ -29,6 +29,7 @@ public class SendMessage extends BaseCommand{
         String oldMessageId = null;
         String oldChannelId = null;
 
+        //Load in data
         for (OptionMapping option : event.getOptions()) {
 
             if (option.getName().equals("message")) {
@@ -40,6 +41,7 @@ public class SendMessage extends BaseCommand{
             }
         }
 
+        //Check if message exists
         String messageQuery = "SELECT * FROM messages WHERE messages.name = ?";
         int size = 0;
 
@@ -62,7 +64,7 @@ public class SendMessage extends BaseCommand{
         }
 
         if (size == 0) {
-            event.reply(String.format("Found no message with name: *%s*, try !getMessages for an overview", messageName)).setEphemeral(ephemeral).queue();
+            event.reply(String.format("Found no message with name: *%s*, try /get messages for an overview", messageName)).setEphemeral(ephemeral).queue();
             return;
         }
 
@@ -81,6 +83,7 @@ public class SendMessage extends BaseCommand{
             return;
         }
 
+        //Deletes message if it had been sent before elsewhere
         if (oldMessageId != null) {
 
             String channelQuery = "SELECT * FROM channels WHERE message = ?";
@@ -106,6 +109,7 @@ public class SendMessage extends BaseCommand{
 
         }
 
+        //Get role information if message type is single
         if (type.equals("single")) {
 
             String typeQuery = "SELECT * FROM roles WHERE messageName = ?";
@@ -128,6 +132,7 @@ public class SendMessage extends BaseCommand{
             }
         }
 
+        //Send message and update tables messages and channels accordingly
         String finalMessageName = messageName;
         MessageChannel finalChannel = channel;
         String finalOldMessageId = oldMessageId;

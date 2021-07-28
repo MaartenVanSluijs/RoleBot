@@ -25,6 +25,7 @@ public class EditMessage extends BaseCommand{
         String roleDescription = null;
         String roleEmoji = null;
 
+        //Load in data
         for (OptionMapping option : event.getOptions()) {
 
             if (option.getName().equals("name")) {
@@ -40,6 +41,7 @@ public class EditMessage extends BaseCommand{
             }
         }
 
+        //Check if message exists
         String messageQuery = "SELECT * FROM messages WHERE name = ?";
         int size = 0;
 
@@ -53,6 +55,7 @@ public class EditMessage extends BaseCommand{
                 size++;
                 messageId = messageRs.getString("id");
 
+                //Set data to current data if none is given
                 if (type == null) {
                     type = messageRs.getString("type");
                 }
@@ -71,6 +74,8 @@ public class EditMessage extends BaseCommand{
             return;
         }
 
+        //Get information on role if message type is getting set to single
+        //Also check if message has 0 or 1 roles, cannot be manually set to single if it has more than 1
         if (type != null && type.equals("single")) {
             String typeQuery = "SELECT * FROM roles WHERE messageName = ?";
             int amount = 0;
@@ -98,6 +103,7 @@ public class EditMessage extends BaseCommand{
             }
         }
 
+        //Get channel if message has already been sent
         if (messageId != null) {
 
             String channelQuery = "SELECT * FROM channels WHERE message = ?";
@@ -119,6 +125,7 @@ public class EditMessage extends BaseCommand{
             }
         }
 
+        //Handles updating if message is not getting deleted from database
         if (!delete) {
 
             if (type != null && !type.equals("single") && !type.equals("multi")) {
@@ -126,6 +133,7 @@ public class EditMessage extends BaseCommand{
                 return;
             }
 
+            //Updates message if it has already been sent
             if (messageId != null) {
 
                 Emoji emoji = roleEmoji != null && roleEmoji.charAt(0) == '<' ? Emoji.fromMarkdown(roleEmoji) : roleEmoji != null ? Emoji.fromUnicode(roleEmoji) : null;
@@ -144,6 +152,7 @@ public class EditMessage extends BaseCommand{
 
             }
 
+            //Updates database if it has already been sent
             String updateQuery = "UPDATE messages SET type = ?, content = ? WHERE name = ?";
 
             try {
@@ -160,8 +169,10 @@ public class EditMessage extends BaseCommand{
                 e.printStackTrace();
             }
 
+        //Message to be deleted from database
         } else {
 
+            //Delete message from discord if sent and update channels table accordingly
             if (messageId != null) {
 
                 event.getGuild().getTextChannelById(channelId).retrieveMessageById(messageId).queue(message -> {
@@ -181,6 +192,7 @@ public class EditMessage extends BaseCommand{
                 }
             }
 
+            //Remove message from database
             String deleteQuery = "DELETE FROM messages WHERE name = ?";
 
             try {

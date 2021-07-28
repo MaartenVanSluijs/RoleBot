@@ -18,6 +18,7 @@ public class DeleteMessage extends BaseCommand{
         String channelId = null;
         String messageId = null;
 
+        //Load in data
         for (OptionMapping option : event.getOptions()) {
 
             if (option.getName().equals("name")) {
@@ -27,6 +28,7 @@ public class DeleteMessage extends BaseCommand{
             }
         }
 
+        //Check if message has been sent yet
         String messageQuery = "SELECT * FROM channels WHERE message = ?";
         int size = 0;
 
@@ -47,10 +49,11 @@ public class DeleteMessage extends BaseCommand{
         }
 
         if (size == 0) {
-            event.reply("Can't delete a message that has not been sent yet").setEphemeral(ephemeral).queue();
+            event.reply(String.format("Can't delete a message: *%s*, as it has not been sent yet", messageName)).setEphemeral(ephemeral).queue();
             return;
         }
 
+        //Get message id from message table
         String idQuery = "SELECT * FROM messages WHERE name = ?";
 
         try {
@@ -68,6 +71,7 @@ public class DeleteMessage extends BaseCommand{
             e.printStackTrace();
         }
 
+        //Delete message from channel
         event.getGuild().getTextChannelById(channelId).retrieveMessageById(messageId).queue(message -> {
 
             message.delete().queue();
@@ -75,6 +79,7 @@ public class DeleteMessage extends BaseCommand{
 
         event.reply(String.format("Successfully deleted message: *%s*", messageName)).setEphemeral(ephemeral).queue();
 
+        //Update tables messages and channels
         String updateQuery = "UPDATE messages SET id = ? WHERE name = ?";
         String channelQuery = "DELETE FROM channels WHERE message = ?";
 

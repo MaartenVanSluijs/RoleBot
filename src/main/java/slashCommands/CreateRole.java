@@ -22,6 +22,7 @@ public class CreateRole extends BaseCommand{
         String messageName = null;
         Boolean ephemeral = null;
 
+        //Load in data
         for (OptionMapping option : event.getOptions()) {
 
             if (option.getName().equals("role")) {
@@ -40,6 +41,7 @@ public class CreateRole extends BaseCommand{
             }
         }
 
+        //Check if role already exists
         String roleQuery = "SELECT * FROM roles WHERE name = ?";
         int size = 0;
 
@@ -59,10 +61,11 @@ public class CreateRole extends BaseCommand{
         }
 
         if (size != 0) {
-            event.reply(String.format("This role already exists")).setEphemeral(ephemeral).queue();
+            event.reply(String.format("This role *%s* already exists", roleName)).setEphemeral(ephemeral).queue();
             return;
         }
 
+        //Create role in database
         String insertQuery = "INSERT INTO roles VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
@@ -82,6 +85,8 @@ public class CreateRole extends BaseCommand{
             e.printStackTrace();
         }
 
+        //If added to message on creation update message
+        //Count amount of roles now bound to this message
         if (messageName != null) {
 
             String messageQuery = "SELECT * FROM roles, messages, channels WHERE roles.messageName = ? AND roles.messageName = messages.name AND messages.name = channels.message";
@@ -106,6 +111,7 @@ public class CreateRole extends BaseCommand{
                 e.printStackTrace();
             }
 
+            //Update type of message
             String updateQuery = "UPDATE messages SET type = ? WHERE name = ?";
 
             try {
@@ -119,6 +125,8 @@ public class CreateRole extends BaseCommand{
                 e.printStackTrace();
             }
 
+            //Check if message has already been sent, if so update button in sent message
+            //Gets discord message information
             String channelQuery = "SELECT * FROM messages, channels WHERE messages.name = ? AND messages.name = channels.message";
             Boolean sent = false;
 
@@ -140,6 +148,7 @@ public class CreateRole extends BaseCommand{
                 e.printStackTrace();
             }
 
+            //Update button
             if (sent) {
 
                 int finalAmount = amount;

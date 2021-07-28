@@ -16,6 +16,7 @@ public class GetMessages extends BaseCommand{
         Boolean content = null;
         Boolean ephemeral = null;
 
+        //Load in data
         for (OptionMapping option : event.getOptions()) {
 
             if (option.getName().equals("messagename")) {
@@ -27,6 +28,7 @@ public class GetMessages extends BaseCommand{
             }
         }
 
+        //Retrieve information
         String query = messageName == null ? "SELECT * FROM messages" : "SELECT * FROM messages WHERE name = ?";
         String response = messageName == null ? "These are all the existing messages:" : String.format("Message with name *%s*:", messageName);
 

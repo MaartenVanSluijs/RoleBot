@@ -15,6 +15,7 @@ public class GetRoles extends BaseCommand{
         String messageName = null;
         Boolean ephemeral = null;
 
+        //Load in data
         for (OptionMapping option : event.getOptions()) {
 
             if (option.getName().equals("messagename")) {
@@ -24,6 +25,7 @@ public class GetRoles extends BaseCommand{
             }
         }
 
+        //Retrieve information
         String query = messageName == null ? "SELECT * FROM roles" : "SELECT * FROM roles WHERE messageName = ?";
         String response = messageName == null ? "These are all the existing roles:" : String.format("Roles for message with name *%s*:", messageName);
 

@@ -17,6 +17,7 @@ public class CreateMessage extends BaseCommand{
         String type = null;
         String content = null;
 
+        //Load in data
         for (OptionMapping option : event.getOptions()) {
 
             if (option.getName().equals("name")) {
@@ -30,6 +31,7 @@ public class CreateMessage extends BaseCommand{
             }
         }
 
+        //Check if message already exists
         int size = 0;
         String nameQuery = "SELECT name FROM messages WHERE name = ?";
 
@@ -58,10 +60,12 @@ public class CreateMessage extends BaseCommand{
             return;
         }
 
+        //default message type is multi
         if (type == null) {
             type = "multi";
         }
 
+        //Create message
         String updateQuery = "INSERT INTO messages (name, type, content) VALUES (?, ?, ?)";
 
         try {
@@ -72,7 +76,7 @@ public class CreateMessage extends BaseCommand{
             updatePstmt.setString(3, content);
             updatePstmt.executeUpdate();
 
-            event.reply("Successfully created message!").setEphemeral(ephemeral).queue();
+            event.reply(String.format("Successfully created message: *%s*!", messageName)).setEphemeral(ephemeral).queue();
 
         } catch (SQLException e) {
             e.printStackTrace();
