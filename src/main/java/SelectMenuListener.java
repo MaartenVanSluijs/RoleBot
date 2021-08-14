@@ -2,6 +2,7 @@
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.SelectionMenuEvent;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.entities.Role;
 import slashCommands.Config;
@@ -76,11 +77,16 @@ public class SelectMenuListener extends ListenerAdapter{
             }
         }
 
-        //Feedback
-        event.getGuild().modifyMemberRoles(event.getMember(), roles).queue(success -> {
+        try {
+            //Feedback
+            event.getGuild().modifyMemberRoles(event.getMember(), roles).queue(success -> {
 
-            MessageEmbed embed = new EmbedBuilder().setTitle("Successfully toggled roles!").build();
-            event.replyEmbeds(embed).setEphemeral(true).queue();
-        });
+                MessageEmbed embed = new EmbedBuilder().setTitle("Successfully toggled roles!").build();
+                event.replyEmbeds(embed).setEphemeral(true).queue();
+            });
+        } catch (HierarchyException e) {
+            e.printStackTrace();
+        }
+
     }
 }

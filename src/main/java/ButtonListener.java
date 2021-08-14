@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.selections.SelectOption;
 import net.dv8tion.jda.api.interactions.components.selections.SelectionMenu;
@@ -140,7 +141,7 @@ public class ButtonListener extends ListenerAdapter{
 
                 rs.close();
 
-            } catch (SQLException e) {
+            } catch (SQLException | HierarchyException e) {
                 e.printStackTrace();
             }
         }
