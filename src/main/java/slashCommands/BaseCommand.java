@@ -16,7 +16,7 @@ public abstract class BaseCommand extends ListenerAdapter {
 
     public BaseCommand() {
         //Sets up connection with database
-        String url = "jdbc:sqlite:" + conf.getSqliteDatabase();
+        String url = "jdbc:mysql://172.18.0.1:3306/s241_roles";
         String user = conf.getUser();
         String password = conf.getPassword();
         try {

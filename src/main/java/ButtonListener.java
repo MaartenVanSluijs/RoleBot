@@ -19,23 +19,31 @@ public class ButtonListener extends ListenerAdapter{
     public Connection conn;                     //Database connection
     public ArrayList<SelectOption> options;     //Options for selectMenu
     public List<Role> roles;                    //Corresponding roles
+    public Config conf;
+    public String url;
+    public String user;
+    public String password;
 
     public ButtonListener() {
 
         ConfigLoader cl = new ConfigLoader();
-        Config conf = cl.loadConfig();
+        conf = cl.loadConfig();
 
-        //Sets up connection with database
-        String url = "jdbc:sqlite:" + conf.getSqliteDatabase();
-        try {
-            conn = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        url = "jdbc:mysql://172.18.0.1:3306/s241_roles";
+        user = conf.getUser();
+        password = conf.getPassword();
     }
 
     @Override
     public void onButtonClick(ButtonClickEvent event) {
+
+        //Sets up connection with database
+
+        try {
+            conn = DriverManager.getConnection(url, user, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         //User's roles before toggling
         roles = new ArrayList<Role>();
@@ -75,15 +83,21 @@ public class ButtonListener extends ListenerAdapter{
                 pstmt.setString(1, event.getMessageId());
                 ResultSet rs = pstmt.executeQuery();
 
-                String roleId = rs.getString(1);
+                String roleId = null;
+                String gate = null;
+                while (rs.next()) {
+                    roleId = rs.getString(1);
+                    gate = rs.getString(2);
+                }
+                rs.close();
                 Role role = event.getGuild().getRoleById(roleId);
 
                 //If user didn't already have role -> start to add role
                 if (!roles.contains(role)) {
 
                     //Check if role is gated, and if so if user meets pre-requisite
-                    if (rs.getString("gated") != null) {
-                        if (roles.contains(event.getGuild().getRoleById(rs.getString("gated")))) {
+                    if (gate != null) {
+                        if (roles.contains(event.getGuild().getRoleById(gate))) {
                             roles.add(role);
                         }
                     //If not gated add regardless

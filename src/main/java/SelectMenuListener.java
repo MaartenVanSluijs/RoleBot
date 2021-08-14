@@ -21,9 +21,11 @@ public class SelectMenuListener extends ListenerAdapter{
         Config conf = cl.loadConfig();
 
         //Sets up connection to database
-        String url = "jdbc:sqlite:" + conf.getSqliteDatabase();
+        String url = "jdbc:mysql://172.18.0.1:3306/s241_roles";
+        String user = conf.getUser();
+        String password = conf.getPassword();
         try {
-            conn = DriverManager.getConnection(url);
+            conn = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             e.printStackTrace();
         }
