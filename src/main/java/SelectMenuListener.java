@@ -14,25 +14,31 @@ public class SelectMenuListener extends ListenerAdapter{
 
     List<Role> roles = new ArrayList<Role>();       //Roles list used to update user's roles
     public Connection conn;                         //Database connection
+    public Config conf;
+    public String url;
+    public String user;
+    public String password;
 
     public SelectMenuListener() {
 
         ConfigLoader cl = new ConfigLoader();
-        Config conf = cl.loadConfig();
+        conf = cl.loadConfig();
 
         //Sets up connection to database
-        String url = "jdbc:mysql://172.18.0.1:3306/s241_roles";
-        String user = conf.getUser();
-        String password = conf.getPassword();
+        url = "jdbc:mysql://172.18.0.1:3306/s241_roles";
+        user = conf.getUser();
+        password = conf.getPassword();
+
+    }
+
+    @Override
+    public void onSelectionMenu(SelectionMenuEvent event) {
+
         try {
             conn = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void onSelectionMenu(SelectionMenuEvent event) {
 
         roles.clear();
         roles.addAll(event.getMember().getRoles());
