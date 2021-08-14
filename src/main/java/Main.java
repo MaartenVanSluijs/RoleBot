@@ -1,13 +1,10 @@
 
-import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import commands.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 
-import com.jagrosh.jdautilities.command.CommandClient;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
@@ -73,7 +70,6 @@ public class Main implements EventListener {
                                         new SubcommandData("delete", "Deletes a role message from a channel")
                                 .addOption(OptionType.STRING, "name", "The message to be deleted", true)
                                 .addOption(OptionType.BOOLEAN, "ephemeral", "Make this response ephemeral", true))
-
         ).queue();
     }
 

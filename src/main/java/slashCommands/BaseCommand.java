@@ -17,8 +17,10 @@ public abstract class BaseCommand extends ListenerAdapter {
     public BaseCommand() {
         //Sets up connection with database
         String url = "jdbc:sqlite:" + conf.getSqliteDatabase();
+        String user = conf.getUser();
+        String password = conf.getPassword();
         try {
-            this.conn = DriverManager.getConnection(url);
+            this.conn = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             e.printStackTrace();
         }
