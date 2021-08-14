@@ -23,7 +23,7 @@ public class EditRole extends BaseCommand{
         Boolean delete = false;
 
         String boundMessage = null;
-        Boolean messageRemoved = false;
+        Boolean messageEdited = false;
 
 
         //Load in data
@@ -72,6 +72,9 @@ public class EditRole extends BaseCommand{
                 }
                 if (messageName == null) {
                     messageName = roleRs.getString("messageName");
+                } else {
+                    messageEdited = true;
+
                 }
             }
             roleRs.close();
@@ -100,7 +103,6 @@ public class EditRole extends BaseCommand{
             }
             if (messageName != null && messageName.equals("null")) {
                 messageName = null;
-                messageRemoved = true;
             }
 
             //Update database with new role data
@@ -123,10 +125,10 @@ public class EditRole extends BaseCommand{
             event.reply(String.format("Successfully edited role *%s*", roleName)).setEphemeral(ephemeral).queue();
 
             //Update messages when role has just been removed from message, or moved from one message to another
-            if (boundMessage != null) {
-                this.updateMessage(event, boundMessage);
-                if (!messageRemoved) {
-                        this.updateMessage(event, messageName);
+            if (messageEdited) {
+                this.updateMessage(event, messageName);
+                if (boundMessage != null) {
+                        this.updateMessage(event, boundMessage);
                 }
             }
 
